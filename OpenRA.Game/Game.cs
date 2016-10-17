@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using OpenRA.Chat;
 using OpenRA.Graphics;
 using OpenRA.Network;
+using OpenRA.Platforms.Default;
 using OpenRA.Primitives;
 using OpenRA.Support;
 using OpenRA.Widgets;
@@ -266,39 +267,22 @@ namespace OpenRA
 			Log.AddChannel("irc", "irc.log");
 			Log.AddChannel("nat", "nat.log");
 
-			var platforms = new[] { Settings.Game.Platform, "Default", null };
-			foreach (var p in platforms)
+			try
 			{
-				if (p == null)
-					throw new InvalidOperationException("Failed to initialize platform-integration library. Check graphics.log for details.");
+				var platform = new DefaultPlatform();
+				Renderer = new Renderer(platform, Settings.Graphics);
+				Sound = new Sound(platform, Settings.Sound);
+			}
+			catch (Exception e)
+			{
+				Log.Write("graphics", "{0}", e);
+				Console.WriteLine("Renderer initialization failed. Check graphics.log for details.");
 
-				Settings.Game.Platform = p;
-				try
-				{
-					var rendererPath = Platform.ResolvePath(Path.Combine(".", "OpenRA.Platforms." + p + ".dll"));
-					var assembly = Assembly.LoadFile(rendererPath);
+				if (Renderer != null)
+					Renderer.Dispose();
 
-					var platformType = assembly.GetTypes().SingleOrDefault(t => typeof(IPlatform).IsAssignableFrom(t));
-					if (platformType == null)
-						throw new InvalidOperationException("Platform dll must include exactly one IPlatform implementation.");
-
-					var platform = (IPlatform)platformType.GetConstructor(Type.EmptyTypes).Invoke(null);
-					Renderer = new Renderer(platform, Settings.Graphics);
-					Sound = new Sound(platform, Settings.Sound);
-
-					break;
-				}
-				catch (Exception e)
-				{
-					Log.Write("graphics", "{0}", e);
-					Console.WriteLine("Renderer initialization failed. Check graphics.log for details.");
-
-					if (Renderer != null)
-						Renderer.Dispose();
-
-					if (Sound != null)
-						Sound.Dispose();
-				}
+				if (Sound != null)
+					Sound.Dispose();
 			}
 
 			GeoIP.Initialize();

@@ -55,6 +55,12 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenAL-CS">
+      <HintPath>..\thirdparty\download\OpenAL-CS.dll</HintPath>
+    </Reference>
+    <Reference Include="SDL2-CS">
+      <HintPath>..\thirdparty\download\SDL2-CS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -92,6 +98,17 @@
     <Compile Include="Activities\CallFunc.cs" />
     <Compile Include="Actor.cs" />
     <Compile Include="CacheStorage.cs" />
+    <Compile Include="DefaultPlatform\DefaultPlatform.cs" />
+    <Compile Include="DefaultPlatform\FrameBuffer.cs" />
+    <Compile Include="DefaultPlatform\MultiTapDetection.cs" />
+    <Compile Include="DefaultPlatform\OpenAlSoundEngine.cs" />
+    <Compile Include="DefaultPlatform\OpenGL.cs" />
+    <Compile Include="DefaultPlatform\Sdl2GraphicsDevice.cs" />
+    <Compile Include="DefaultPlatform\Sdl2Input.cs" />
+    <Compile Include="DefaultPlatform\Shader.cs" />
+    <Compile Include="DefaultPlatform\Texture.cs" />
+    <Compile Include="DefaultPlatform\ThreadAffine.cs" />
+    <Compile Include="DefaultPlatform\VertexBuffer.cs" />
     <Compile Include="FileSystem\IdxEntry.cs" />
     <Compile Include="FileSystem\IPackage.cs" />
     <Compile Include="LogProxy.cs" />

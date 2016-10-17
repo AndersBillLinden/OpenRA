@@ -87,7 +87,7 @@ INSTALL_PROGRAM = $(INSTALL) -m755
 INSTALL_DATA = $(INSTALL) -m644
 
 # program targets
-CORE = pdefault game utility server
+CORE = game utility server
 TOOLS = gamemonitor
 VERSION     = $(shell git name-rev --name-only --tags --no-undefined HEAD 2>/dev/null || echo git-`git rev-parse --short HEAD`)
 
@@ -112,15 +112,6 @@ game_LIBS = $(COMMON_LIBS) $(game_DEPS) thirdparty/download/SharpFont.dll thirdp
 game_FLAGS = -win32icon:OpenRA.Game/OpenRA.ico
 PROGRAMS += game
 game: $(game_TARGET)
-
-# Platform dlls
-pdefault_SRCS := $(shell find OpenRA.Platforms.Default/ -iname '*.cs')
-pdefault_TARGET = OpenRA.Platforms.Default.dll
-pdefault_KIND = library
-pdefault_DEPS = $(game_TARGET)
-pdefault_LIBS = $(COMMON_LIBS) thirdparty/download/SDL2-CS.dll thirdparty/download/OpenAL-CS.dll $(pdefault_DEPS)
-PROGRAMS += pdefault
-platforms: $(pdefault_TARGET)
 
 # Mods Common
 mod_common_SRCS := $(shell find OpenRA.Mods.Common/ -iname '*.cs')
@@ -192,9 +183,6 @@ check: utility mods
 	@echo
 	@echo "Checking for code style violations in OpenRA.Game..."
 	@mono --debug OpenRA.Utility.exe ra --check-code-style OpenRA.Game
-	@echo
-	@echo "Checking for code style violations in OpenRA.Platforms.Default..."
-	@mono --debug OpenRA.Utility.exe ra --check-code-style OpenRA.Platforms.Default
 	@echo
 	@echo "Checking for code style violations in OpenRA.GameMonitor..."
 	@mono --debug OpenRA.Utility.exe ra --check-code-style OpenRA.GameMonitor
@@ -318,7 +306,7 @@ $(foreach prog,$(PROGRAMS),$(eval $(call BUILD_ASSEMBLY,$(prog))))
 #
 default: core
 
-core: game platforms mods utility server
+core: game mods utility server
 
 tools: gamemonitor
 
